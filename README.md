@@ -1,26 +1,25 @@
 # Flask on Heroku
 
-This project is intended to help you tie together some important concepts and
-technologies from the 12-day course, including Git, Flask, JSON, Pandas,
-Requests, Heroku, and Bokeh for visualization.
+The repository contains a basic template for a Flask configuration that will work on Heroku.
 
-The repository contains a basic template for a Flask configuration that will
-work on Heroku.
-
-A [finished example](https://lemurian.herokuapp.com) that demonstrates some basic functionality.
+An [example](https://lemurian.herokuapp.com) that demonstrates some basic functionality.
+Another more detailed [example](https://github.com/Hengyi-Zhu/nyc-taxi) that shows how to set up 
+static and templates folder, as well as path in .py files, using styles from Bootstrap.
 
 ## Step 1: Setup and deploy
-- Git clone the existing template repository.
+- Git clone the existing template repository. `git clone <repository url on Github>`
 - `Procfile`, `requirements.txt`, `conda-requirements.txt`, and `runtime.txt`
   contain some default settings.
+- 'nomkl' in `conda-requirements.txt` prevents some slug size problem when deploying to heroku, 
+  as it will use the non-mkl optimized binaries, and won't download the mkl package.
 - There is some boilerplate HTML in `templates/`
+- [Bootstrap](http://getbootstrap.com/), a CSS / JS template that gives your page a solidly 
+  presentable (albeit not terribly creative) layout.
 - Create Heroku application with `heroku create <app_name>` or leave blank to
   auto-generate a name.
 - (Suggested) Use the [conda buildpack](https://github.com/kennethreitz/conda-buildpack).
-  If you choose not to, put all requirements into `requirements.txt`
-
   `heroku config:add BUILDPACK_URL=https://github.com/kennethreitz/conda-buildpack.git`
-- *Question*: What are the pros and cons of using conda vs. pip?
+  If you choose not to, put all requirements into `requirements.txt`
 - Deploy to Heroku: `git push heroku master`
 - You should be able to see your site at `https://<app_name>.herokuapp.com`
 - A useful reference is the Heroku [quickstart guide](https://devcenter.heroku.com/articles/getting-started-with-python-o).

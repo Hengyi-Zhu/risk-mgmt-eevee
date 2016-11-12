@@ -1,3 +1,4 @@
+nomkl
 scipy
 numpy
 pandas
