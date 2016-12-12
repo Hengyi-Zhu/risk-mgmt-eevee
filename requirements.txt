@@ -6,3 +6,4 @@ oauth==1.0.1
 oauthlib==0.7.2
 requests>=2.11.1
 simplejson>=3.10.0
+pandas-datareader>=0.2.1
