@@ -55,7 +55,6 @@
               <ul class="nav navbar-nav">
                 <li style="font-size:130%;" class="active"><a href="#feature1">Individual stock</a></li>
                 <li style="font-size:130%;"><a href="#feature2">Portfolio</a></li>
-                <li style="font-size:130%;"><a href="#feature3">Feature3</a></li>
               </ul>
             </div>
           </div>
@@ -72,36 +71,62 @@
 
       <!-- START THE FEATURETTES -->
 
-      <hr class="featurette-divider">
-
       <div class="row featurette">
         <div id="feature1">
           <h2 class="featurette-heading" align="center">Individual Stock </h2>
             <p class="lead" align="center">Some descriptions.</p>
               <form style="font-size:130%;" method='post' align="center">
-                  Ticker: <input type="text" name="tickers_string_1" value="AAPL">
-                  Start date: <input type="date" name="position_date_1" value='2000-01-01'>    
-                  End date: <input type="date" name="end_date_1" value='2016-12-01'>
-                  <input type='submit' value='Graph'>
+                  <div class="form-group">
+                      <div class="col-md-4">
+                          Ticker: <input type="text" name="tickers_string_1" value="AAPL">
+                      </div>
+                      <div class="col-md-4">
+                          Start date: <input type="date" name="position_date_1" value='2000-12-01'>    
+                      </div>
+                      <div class="col-md-4">
+                          End date: <input type="date" name="end_date_1" value='2016-12-01'>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div class="col-md-4">
+                          &nbsp;&nbsp;&nbsp;V_0: <input type="text" name="v0_1" value="10000">
+                      </div>
+                      <div class="col-md-4">
+                          VaR prob: <input type="text" name="var_prob_1" value='0.99'>    
+                      </div>
+                      <div class="col-md-4">
+                          ES prob: <input type="text" name="es_prob_1" value='0.975'>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div class="col-md-4">
+                          Window: <input type="text" name="window_year_1" value='2'>
+                      </div>
+                      <div class="col-md-4">
+                          &nbsp;&nbsp;&nbsp;Horizon: <input type="text" name="horizon_day_1" value='5'>
+                      </div>
+                      <div class="col-md-4">
+                          <select class="form-control" name='var_es_method_1'>
+                            <option>Parametric VaR/ES</option>
+                            <option>Historical VaR/ES</option>
+                            <option>Monte Carlo VaR/ES</option>
+                          </select>
+                      </div>
+                  </div>
                   <br>
+                  <div class="form-group">
+                      <input type='submit' name="btn_1" value='Price Plot'> &nbsp;
+                      <input type='submit' name="btn_1" value='Parameter Plot'> &nbsp;
+                      <input type='submit' name="btn_1" value='Risk Plot'>
+                  </div>
               </form>
         </div>
+        <br>
           <div class="row">
-              <div class="col-md-6">
-                  {{ div_1_1 | safe }}
-              </div>    
-              <div class="col-md-6">
-                  {{ div_1_2 | safe }}
-              </div> 
+              <div class="col-md-3"></div>
+              <div class="col-md-6">{{ div_1_1 | safe }}</div>
           </div>
-          <div class="row">
-              <div class="col-md-6">
-                  {{ div_1_3 | safe }}
-              </div>    
-              <div class="col-md-6">
-                  {{ div_1_4 | safe }}
-              </div>
-          </div>
+          <div class="row">{{ div_1_2 | safe }}</div>
       </div>
 
       <hr class="featurette-divider">
@@ -115,25 +140,13 @@
                   <br>
                   Weights(separated by comma): <input type="text" name="weights_string_2" value="0.5,0.5">
                   <br>
-                  Position date: <input type="date" name="position_date_2" value='2000-01-01'>
+                  Position date: <input type="date" name="position_date_2" value='2000-12-01'>
                   <br>    
                   End date: <input type="date" name="end_date_2" value='2016-12-01'>
                   <br>
                   <input type='submit' value='Calculate'>
                   <br>
               </form>
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div id="feature3" class="col-md-7">
-          <h2 class="featurette-heading">Feature <span class="text-muted">3</span></h2>
-          <p class="lead">Some Descriptions.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
         </div>
       </div>
 
