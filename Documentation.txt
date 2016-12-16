@@ -1,1 +1,11 @@
-1. packages 
+1. Required packages
+2. Functions for calculation system
+  2.1. What can be done? What cannot be done? (basic assumptions)
+3. Input testing
+  3.1. If there are missing input fields
+  3.1. If tickers are provided correctly
+  3.2. If weights sum up to 1
+4. Implementation
+  4.1. Go through steps
+  4.2. Dependency among methods: if one method needs to be executed before running another? (still global/local variable issue)
+5. User guideline
