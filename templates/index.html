@@ -31,7 +31,14 @@
     <link rel=stylesheet type=text/css href='{{ url_for('static',filename='carousel.css')}}'>
     <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css" type="text/css" />
     <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.js"></script>
-    {{ script_1_1 | safe }}
+    {{ script | safe }}
+
+    {% if scroll %}
+    <script>
+    document.location.hash = '#' + '{{ scroll }}';
+    </script>
+    {% endif %}
+
   </head>
 <!-- NAVBAR
 ================================================== -->
@@ -46,8 +53,8 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li style="font-size:130%;" class="active"><a href="#feature1">Feature1</a></li>
-                <li style="font-size:130%;"><a href="#feature2">Feature2</a></li>
+                <li style="font-size:130%;" class="active"><a href="#feature1">Individual stock</a></li>
+                <li style="font-size:130%;"><a href="#feature2">Portfolio</a></li>
                 <li style="font-size:130%;"><a href="#feature3">Feature3</a></li>
               </ul>
             </div>
@@ -68,30 +75,40 @@
       <hr class="featurette-divider">
 
       <div class="row featurette">
-        <div id="feature1" class="col-md-5">
-          <h2 class="featurette-heading">Feature <span class="text-muted">1</span></h2>
-            <p class="lead">Some descriptions.</p>
-              <form style="font-size:130%;" method='post'>
+        <div id="feature1">
+          <h2 class="featurette-heading" align="center">Individual Stock </h2>
+            <p class="lead" align="center">Some descriptions.</p>
+              <form style="font-size:130%;" method='post' align="center">
                   Ticker: <input type="text" name="tickers_string_1" value="AAPL">
-                  <br>
-                  Start date: <input type="date" name="position_date_1" value='2000-01-01'>
-                  <br>    
+                  Start date: <input type="date" name="position_date_1" value='2000-01-01'>    
                   End date: <input type="date" name="end_date_1" value='2016-12-01'>
-                  <br>
-                  <input type='submit' value='Calculate'>
+                  <input type='submit' value='Graph'>
                   <br>
               </form>
         </div>
-        <div class="col-md-7">
-            {{ div_1_1 | safe }}
-        </div>
+          <div class="row">
+              <div class="col-md-6">
+                  {{ div_1_1 | safe }}
+              </div>    
+              <div class="col-md-6">
+                  {{ div_1_2 | safe }}
+              </div> 
+          </div>
+          <div class="row">
+              <div class="col-md-6">
+                  {{ div_1_3 | safe }}
+              </div>    
+              <div class="col-md-6">
+                  {{ div_1_4 | safe }}
+              </div>
+          </div>
       </div>
 
       <hr class="featurette-divider">
 
       <div class="row featurette">
-        <div id="feature2" class="col-md-7 col-md-push-5">
-          <h2 class="featurette-heading">Feature <span class="text-muted">2</span></h2>
+        <div id="feature2">
+          <h2 class="featurette-heading">Portfolio</h2>
               <p class="lead">Some Descriptions.</p>
               <form style="font-size:130%;" method='post'>
                   Tickers(separated by comma): <input type="text" name="tickers_string_2" value="AAPL,AMZN">
@@ -105,9 +122,6 @@
                   <input type='submit' value='Calculate'>
                   <br>
               </form>
-        </div>
-        <div class="col-md-5 col-md-pull-7">
-          <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
         </div>
       </div>
 
