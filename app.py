@@ -2,7 +2,7 @@
 # Remember to properly add the packages to requirements.txt or conda-requirements.txt. 
 from __future__ import division
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_file
 import requests
 import dill, os
 import sys
@@ -35,7 +35,8 @@ def create_df_from_tickers(tickers_string, position_date, end_date):
 
 # Price plot
 def plot_price(price, length):
-    data = price[:length]   
+    data = price[:length]
+    data.to_csv('outputs/result_data.csv')
     plot = figure(width=600, height=400, title = "%s Historical Prices" % data.columns.values[0], 
                   x_axis_label='Date', y_axis_label='Price', x_axis_type="datetime")
     plot.line(data.index, data)
@@ -62,7 +63,8 @@ def plot_parameters(price):
     mu = pd.DataFrame({'Mu_2': mu_2[:length], 'Mu_5': mu_5[:length], 'Mu_10': mu_10[:length]}, 
                       index = price.index[:length])
     sigma = pd.DataFrame({'Sigma_2': sigma_2[:length], 'Sigma_5': sigma_5[:length], 'Sigma_10': sigma_10[:length]}, 
-                         index = price.index[:length])  
+                         index = price.index[:length])
+    pd.merge(mu, sigma, left_index=True, right_index=True).to_csv('outputs/result_data.csv')
     pmu = figure(width=600, height=400, title = "Mu", 
                  x_axis_label='Date', y_axis_label='Mu', x_axis_type="datetime")
     pmu.line(mu.index, mu['Mu_2'], legend = '2-year roling window')
@@ -132,6 +134,7 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
         sys.exit('Error!')        
     length = min(len(VaR), len(ES), plot_length)
     VaR_ES = pd.DataFrame({'VaR': VaR[:length], 'ES': ES[:length]}, index = price.index[:plot_length])
+    VaR_ES.to_csv('outputs/result_data.csv')
     plot = figure(width=600, height=400, title = "VaR/ES", x_axis_type="datetime")
     plot.line(VaR_ES.index, VaR_ES['VaR'], color = 'orange', legend = 'VaR')
     plot.line(VaR_ES.index, VaR_ES['ES'], color = 'green', legend = 'ES')
@@ -204,6 +207,13 @@ def index():
         else:
             return render_template('index.html')
         # Feature 2 - Portfolio
+
+@app.route("/download_data_1")
+def download_data_1():
+    return send_file('outputs/result_data.csv',
+                     mimetype='text/csv',
+                     attachment_filename='result_data.csv',
+                     as_attachment=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
