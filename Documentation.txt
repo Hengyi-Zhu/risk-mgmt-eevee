@@ -8,4 +8,4 @@
 4. Implementation
   4.1. Go through steps
   4.2. Dependency among methods: if one method needs to be executed before running another? (still global/local variable issue)
-5. User guideline
+5. User guideline (show sample output of AAPL, [AAPL, AMZN])
