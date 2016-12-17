@@ -36,12 +36,13 @@ def create_df_from_tickers(tickers_string, position_date, end_date):
 # Price plot
 def plot_price(price, length):
     data = price[:length]
-    data.to_csv('outputs/result_data.csv')
+    output_file = 'outputs/price_%s_%s_%s.csv' % (data.columns.values[0], data.index[-1].date(), data.index[0].date())
+    data.to_csv(output_file)
     plot = figure(width=600, height=400, title = "%s Historical Prices" % data.columns.values[0], 
                   x_axis_label='Date', y_axis_label='Price', x_axis_type="datetime")
     plot.line(data.index, data)
     plot.title.text_font_size = '12pt'
-    return plot
+    return plot, output_file
 
 # Calculate estimated parameters for GBM based on x year (in days) rolling windows
 def gbm_est(prices, window_days):
@@ -64,7 +65,8 @@ def plot_parameters(price):
                       index = price.index[:length])
     sigma = pd.DataFrame({'Sigma_2': sigma_2[:length], 'Sigma_5': sigma_5[:length], 'Sigma_10': sigma_10[:length]}, 
                          index = price.index[:length])
-    pd.merge(mu, sigma, left_index=True, right_index=True).to_csv('outputs/result_data.csv')
+    output_file = 'outputs/mu_sigma_%s_%s_%s.csv' % (price.name, mu.index[-1].date(), mu.index[0].date())
+    pd.merge(mu, sigma, left_index=True, right_index=True).to_csv(output_file)
     pmu = figure(width=600, height=400, title = "Mu", 
                  x_axis_label='Date', y_axis_label='Mu', x_axis_type="datetime")
     pmu.line(mu.index, mu['Mu_2'], legend = '2-year roling window')
@@ -82,7 +84,7 @@ def plot_parameters(price):
     psigma.legend.location = 'top_left'
     psigma.legend.background_fill_alpha = 0.5
     plot = row(pmu, psigma)
-    return plot
+    return plot, output_file
 
 # Calculate VaR and ES using parametric method
 def parametric(v0, mu, sigma, VaR_prob, ES_prob, t):
@@ -134,7 +136,9 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
         sys.exit('Error!')        
     length = min(len(VaR), len(ES), plot_length)
     VaR_ES = pd.DataFrame({'VaR': VaR[:length], 'ES': ES[:length]}, index = price.index[:plot_length])
-    VaR_ES.to_csv('outputs/result_data.csv')
+    output_file = 'outputs/%s_%s_%s_%s.csv' % (method.replace(" VaR/ES", "").replace(" ", "_"), price.name, 
+                                               VaR_ES.index[-1].date(), VaR_ES.index[0].date())
+    VaR_ES.to_csv(output_file)
     plot = figure(width=600, height=400, title = "VaR/ES", x_axis_type="datetime")
     plot.line(VaR_ES.index, VaR_ES['VaR'], color = 'orange', legend = 'VaR')
     plot.line(VaR_ES.index, VaR_ES['ES'], color = 'green', legend = 'ES')
@@ -153,7 +157,7 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
     plot_test.legend.background_fill_alpha = 0.5
     plot_test.title.text_font_size = '12pt'
     plots = row(plot,plot_test)
-    return plots
+    return plots, output_file
 
 
 ################## Flask & html interaction ##################
@@ -167,7 +171,7 @@ def main():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('index.html', output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv')
     else:
         # Feature 1 - Individual stock
         if request.form['btn_1'] == 'Price Plot':
@@ -175,19 +179,19 @@ def index():
             position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
             end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
             df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)
-            plot_1_1 = plot_price(df_1, plot_length_1)
+            plot_1_1, output_file_1 = plot_price(df_1, plot_length_1)
             plots = {'div_1_1': plot_1_1}
             script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_1 = div['div_1_1'])
+            return render_template('index.html', scroll='feature1', script = script, div_1_1 = div['div_1_1'], output_file_1 = output_file_1)
         elif request.form['btn_1'] == 'Parameter Plot':
             tickers_string_1 = request.form["tickers_string_1"]
             position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
             end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
             df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
-            plot_1_2 = plot_parameters(df_1.iloc[:,0])
+            plot_1_2, output_file_1 = plot_parameters(df_1.iloc[:,0])
             plots = {'div_1_2': plot_1_2}
             script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'])
+            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
         elif request.form['btn_1'] == 'Risk Plot':
             tickers_string_1 = request.form["tickers_string_1"]
             position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
@@ -200,20 +204,18 @@ def index():
             horizon_year_1 = horizon_day_1/252
             var_es_method_1 = request.form["var_es_method_1"]
             df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
-            plot_1_2 = plot_risk(v0_1, df_1.iloc[:,0], var_prob_1, es_prob_1, var_es_method_1, window_year_1, horizon_year_1, plot_length_1)
+            plot_1_2, output_file_1 = plot_risk(v0_1, df_1.iloc[:,0], var_prob_1, es_prob_1, var_es_method_1, window_year_1, horizon_year_1, plot_length_1)
             plots = {'div_1_2': plot_1_2}
             script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'])
+            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
+        elif request.form['btn_1'] == 'Download Result Data':
+            output_file_1 = request.form["output_file_1"]
+            return send_file(output_file_1, mimetype='text/csv', 
+                             attachment_filename=output_file_1.split('/')[1], as_attachment=True)
         else:
             return render_template('index.html')
         # Feature 2 - Portfolio
 
-@app.route("/download_data_1")
-def download_data_1():
-    return send_file('outputs/result_data.csv',
-                     mimetype='text/csv',
-                     attachment_filename='result_data.csv',
-                     as_attachment=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
