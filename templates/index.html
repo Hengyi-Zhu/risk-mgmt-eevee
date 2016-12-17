@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="Risk Management Web Application">
+    <meta name="description" content="Risk Calculation Engine">
     <meta name="author" content="Hengyi (Harry) Zhu and Shuran Zhang">
     <link rel="icon" href='{{ url_for('static',filename='favicon.ico')}}'>
 
-    <title>Risk Management Project Eevee</title>
+    <title>Risk Calculation Engine</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -51,12 +51,13 @@
         <nav class="navbar navbar-inverse navbar-fixed-top container">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#">Project name</a>
+              <a class="navbar-brand" href="#">Risk Calculation Engine</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li style="font-size:130%;" class="active"><a href="#feature1">Individual stock</a></li>
                 <li style="font-size:130%;"><a href="#feature2">Portfolio</a></li>
+                <li style="font-size:130%;"><a href="#feature3">Options</a></li>  
               </ul>
             </div>
           </div>
@@ -70,12 +71,14 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
     <div class="container marketing">
-
+      
+      <hr style="margin-top: 60px;">  
+        
       <!-- START THE FEATURETTES -->
 
       <div class="row featurette">
         <div id="feature1">
-          <h2 class="featurette-heading" align="center">Individual Stock </h2>
+          <h3 align="center" style="font-size:50px;">Individual Stock </h3>
           <p class="lead" align="center">Some descriptions.</p>
           <form style="font-size:130%;" method='post' align="center">
             <div class="row">
@@ -161,20 +164,93 @@
 
       <div class="row featurette">
         <div id="feature2">
-          <h2 class="featurette-heading">Portfolio</h2>
-              <p class="lead">Some Descriptions.</p>
-              <form style="font-size:130%;" method='post'>
-                  Tickers(separated by comma): <input type="text" name="tickers_string_2" value="AAPL,AMZN">
-                  <br>
-                  Weights(separated by comma): <input type="text" name="weights_string_2" value="0.5,0.5">
-                  <br>
-                  Position date: <input type="date" name="position_date_2" value='2000-12-01'>
-                  <br>    
-                  End date: <input type="date" name="end_date_2" value='2016-12-01'>
-                  <br>
-                  <input type='submit' value='Calculate'>
-                  <br>
-              </form>
+          <h3 align="center" style="font-size:50px;">Portfolio</h3>
+          <p class="lead" align="center">Some descriptions.</p>
+          <form style="font-size:130%;" method='post' align="center">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="input-group">
+                  <span class="input-group-addon">Tickers: </span>
+                  <input type="text" class="form-control" name="tickers_string_2" value="AAPL,AMZN">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Start date: </span>
+                  <input type="date" class="form-control" name="position_date_2" value='2000-12-01'>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="input-group">
+                  <span class="input-group-addon">Weights: </span>
+                  <input type="text" class="form-control" name="weights_string_2" value="0.5,0.5">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">End date: </span>
+                  <input type="date" class="form-control" name="end_date_2" value='2016-12-01'>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Initial Investments: </span>
+                  <input type="text" class="form-control" name="v0_2" value="10000">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">VaR Probability: </span>
+                  <input type="text" class="form-control" name="var_prob_2" value='0.99'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">ES Probability: </span>
+                  <input type="text" class="form-control" name="es_prob_2" value='0.975'>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Window (years): </span>
+                  <input type="text" class="form-control" name="window_year_2" value='2'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Horizon (days): </span>
+                  <input type="text" class="form-control" name="horizon_day_2" value='5'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                  <select class="form-control" name='var_es_method_2'>
+                    <option>Parametric VaR/ES</option>
+                    <option>Historical VaR/ES</option>
+                    <option>Monte Carlo VaR/ES</option>
+                  </select>
+              </div>
+            </div>
+            <br>
+            <div class="form-group">
+              <input type='submit' name="btn_2" value='Price Plot'> &nbsp;
+              <input type='submit' name="btn_2" value='Parameter Plot'> &nbsp;
+              <input type='submit' name="btn_2" value='Risk Plot'> &nbsp;
+              <input type='submit' name="btn_2" value='Download Result Data'>
+              <input type="hidden" name="output_file_2" value="{{output_file_2}}">
+            </div>
+          </form>
+        <br>
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">{{ div_2_1 | safe }}</div>
+          </div>
+          <div class="row">{{ div_2_2 | safe }}</div>
         </div>
       </div>
 

@@ -22,7 +22,7 @@ import dateutil.relativedelta
 
 ##################  Function definitions ##################
 
-# Function definitions
+# Create dataframe from input for individual stock
 def create_df_from_tickers(tickers_string, position_date, end_date):
     tickers_list = tickers_string.split(",")
     start_date = position_date - dateutil.relativedelta.relativedelta(years = 10)
@@ -32,6 +32,20 @@ def create_df_from_tickers(tickers_string, position_date, end_date):
     df = pd.DataFrame(d).sort_index(ascending = False)
     plot_length = len(df[df.index >= position_date])
     return df, plot_length
+
+# Create dataframe from input for portfolio
+def create_df_from_tickers_port(tickers_string, weights_string, v0, position_date, end_date):
+    tickers_list = tickers_string.split(",")
+    weights_list = map(float, weights_string.split(","))
+    start_date = position_date - dateutil.relativedelta.relativedelta(years = 10)
+    d={}
+    for ticker in tickers_list:
+        d["{0}".format(ticker)] = web.DataReader(ticker, 'yahoo', start_date, end_date)['Adj Close'].rename(ticker)
+    df = pd.DataFrame(d).sort_index(ascending = False)
+    plot_length = len(df[df.index >= position_date])
+    shares = np.round(np.divide(v0 * np.array(weights_list), np.array(df.ix[position_date])))
+    portfolio = pd.DataFrame({'Portfolio_%s' % (tickers_string.replace(",", "_")): np.matmul(df, shares)}, index = df.index)
+    return portfolio, plot_length
 
 # Price plot
 def plot_price(price, length):
@@ -159,7 +173,6 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
     plots = row(plot,plot_test)
     return plots, output_file
 
-
 ################## Flask & html interaction ##################
 
 app = Flask(__name__)
@@ -174,44 +187,104 @@ def index():
         return render_template('index.html', output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv')
     else:
         # Feature 1 - Individual stock
-        if request.form['btn_1'] == 'Price Plot':
-            tickers_string_1 = request.form["tickers_string_1"]
-            position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-            end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
-            df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)
-            plot_1_1, output_file_1 = plot_price(df_1, plot_length_1)
-            plots = {'div_1_1': plot_1_1}
-            script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_1 = div['div_1_1'], output_file_1 = output_file_1)
-        elif request.form['btn_1'] == 'Parameter Plot':
-            tickers_string_1 = request.form["tickers_string_1"]
-            position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-            end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
-            df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
-            plot_1_2, output_file_1 = plot_parameters(df_1.iloc[:,0])
-            plots = {'div_1_2': plot_1_2}
-            script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
-        elif request.form['btn_1'] == 'Risk Plot':
-            tickers_string_1 = request.form["tickers_string_1"]
-            position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-            end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')            
-            v0_1 = int(request.form["v0_1"])
-            var_prob_1 = float(request.form["var_prob_1"])
-            es_prob_1 = float(request.form["es_prob_1"])
-            window_year_1 = int(request.form["window_year_1"])
-            horizon_day_1 = float(request.form["horizon_day_1"])
-            horizon_year_1 = horizon_day_1/252
-            var_es_method_1 = request.form["var_es_method_1"]
-            df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
-            plot_1_2, output_file_1 = plot_risk(v0_1, df_1.iloc[:,0], var_prob_1, es_prob_1, var_es_method_1, window_year_1, horizon_year_1, plot_length_1)
-            plots = {'div_1_2': plot_1_2}
-            script, div = components(plots)
-            return render_template('index.html', scroll='feature1', script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
-        elif request.form['btn_1'] == 'Download Result Data':
-            output_file_1 = request.form["output_file_1"]
-            return send_file(output_file_1, mimetype='text/csv', 
-                             attachment_filename=output_file_1.split('/')[1], as_attachment=True)
+        if 'btn_1' in request.form:
+            if request.form['btn_1'] == 'Price Plot':
+                tickers_string_1 = request.form["tickers_string_1"]
+                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
+                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)
+                plot_1_1, output_file_1 = plot_price(df_1, plot_length_1)
+                plots = {'div_1_1': plot_1_1}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature1', script = script,
+                                       div_1_1 = div['div_1_1'], output_file_1 = output_file_1)
+            elif request.form['btn_1'] == 'Parameter Plot':
+                tickers_string_1 = request.form["tickers_string_1"]
+                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
+                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
+                plot_1_2, output_file_1 = plot_parameters(df_1.iloc[:,0])
+                plots = {'div_1_2': plot_1_2}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature1', script = script,
+                                       div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
+            elif request.form['btn_1'] == 'Risk Plot':
+                tickers_string_1 = request.form["tickers_string_1"]
+                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
+                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')            
+                v0_1 = int(request.form["v0_1"])
+                var_prob_1 = float(request.form["var_prob_1"])
+                es_prob_1 = float(request.form["es_prob_1"])
+                window_year_1 = int(request.form["window_year_1"])
+                horizon_day_1 = float(request.form["horizon_day_1"])
+                horizon_year_1 = horizon_day_1/252
+                var_es_method_1 = request.form["var_es_method_1"]
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
+                plot_1_2, output_file_1 = plot_risk(v0_1, df_1.iloc[:,0], var_prob_1, es_prob_1, 
+                                                    var_es_method_1, window_year_1, horizon_year_1, plot_length_1)
+                plots = {'div_1_2': plot_1_2}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature1', script = script,
+                                       div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
+            elif request.form['btn_1'] == 'Download Result Data':
+                output_file_1 = request.form["output_file_1"]
+                return send_file(output_file_1, mimetype='text/csv', 
+                                 attachment_filename=output_file_1.split('/')[1], as_attachment=True)
+            else:
+                pass
+        elif 'btn_2' in request.form:
+            if request.form['btn_2'] == 'Price Plot':
+                tickers_string_2 = request.form["tickers_string_2"]
+                weights_string_2 = request.form["weights_string_2"]
+                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
+                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
+                v0_2 = int(request.form["v0_2"])
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
+                                                                  position_date_2, end_date_2)
+                plot_2_1, output_file_2 = plot_price(df_2, plot_length_2) 
+                plots = {'div_2_1': plot_2_1}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature2', script = script,
+                                       div_2_1 = div['div_2_1'], output_file_2 = output_file_2)
+            elif request.form['btn_2'] == 'Parameter Plot':
+                tickers_string_2 = request.form["tickers_string_2"]
+                weights_string_2 = request.form["weights_string_2"]
+                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
+                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
+                v0_2 = int(request.form["v0_2"])
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
+                                                                  position_date_2, end_date_2)            
+                plot_2_2, output_file_2 = plot_parameters(df_2.iloc[:,0])
+                plots = {'div_2_2': plot_2_2}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature2', script = script,
+                                       div_2_2 = div['div_2_2'], output_file_2 = output_file_2)
+            elif request.form['btn_2'] == 'Risk Plot':
+                tickers_string_2 = request.form["tickers_string_2"]
+                weights_string_2 = request.form["weights_string_2"]
+                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
+                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
+                v0_2 = int(request.form["v0_2"])
+                var_prob_2 = float(request.form["var_prob_2"])
+                es_prob_2 = float(request.form["es_prob_2"])
+                window_year_2 = int(request.form["window_year_2"])
+                horizon_day_2 = float(request.form["horizon_day_2"])
+                horizon_year_2 = horizon_day_2/252
+                var_es_method_2 = request.form["var_es_method_2"]
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
+                                                                  position_date_2, end_date_2)            
+                plot_2_2, output_file_2 = plot_risk(v0_2, df_2.iloc[:,0], var_prob_2, es_prob_2, 
+                                                    var_es_method_2, window_year_2, horizon_year_2, plot_length_2)
+                plots = {'div_2_2': plot_2_2}
+                script, div = components(plots)
+                return render_template('index.html', scroll='feature2', script = script,
+                                       div_2_2 = div['div_2_2'], output_file_2 = output_file_2)
+            elif request.form['btn_2'] == 'Download Result Data':
+                output_file_2 = request.form["output_file_2"]
+                return send_file(output_file_2, mimetype='text/csv', 
+                                 attachment_filename=output_file_2.split('/')[1], as_attachment=True)
+            else:
+                pass
         else:
             return render_template('index.html')
         # Feature 2 - Portfolio
