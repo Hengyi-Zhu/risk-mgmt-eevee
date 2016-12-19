@@ -81,7 +81,7 @@ def plot_parameters(price):
                          index = price.index[:length])
     output_file = 'outputs/mu_sigma_%s_%s_%s.csv' % (price.name, mu.index[-1].date(), mu.index[0].date())
     pd.merge(mu, sigma, left_index=True, right_index=True).to_csv(output_file)
-    pmu = figure(width=600, height=400, title = "Mu", 
+    pmu = figure(width=600, height=400, title = "%s Mu" % price.name, 
                  x_axis_label='Date', y_axis_label='Mu', x_axis_type="datetime")
     pmu.line(mu.index, mu['Mu_2'], legend = '2-year roling window')
     pmu.line(mu.index, mu['Mu_5'], color = 'green', legend = '5-year roling window')
@@ -89,7 +89,7 @@ def plot_parameters(price):
     pmu.title.text_font_size = '12pt'
     pmu.legend.location = 'top_left'
     pmu.legend.background_fill_alpha = 0.5
-    psigma = figure(width=600, height=400, title = "Sigma", 
+    psigma = figure(width=600, height=400, title = "%s Sigma" % price.name, 
                     x_axis_label='Date', y_axis_label='Sigma', x_axis_type="datetime")
     psigma.line(mu.index, sigma['Sigma_2'], legend = '2-year roling window')
     psigma.line(mu.index, sigma['Sigma_5'], color = 'green', legend = '5-year roling window')
@@ -153,7 +153,9 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
     output_file = 'outputs/%s_%s_%s_%s.csv' % (method.replace(" VaR/ES", "").replace(" ", "_"), price.name, 
                                                VaR_ES.index[-1].date(), VaR_ES.index[0].date())
     VaR_ES.to_csv(output_file)
-    plot = figure(width=600, height=400, title = "VaR/ES", x_axis_type="datetime")
+    plot = figure(width=600, height=400,
+                  title = "%s_%s VaR/ES" % (method.replace(" VaR/ES", "").replace(" ", "_"), price.name),
+                  x_axis_type="datetime")
     plot.line(VaR_ES.index, VaR_ES['VaR'], color = 'orange', legend = 'VaR')
     plot.line(VaR_ES.index, VaR_ES['ES'], color = 'green', legend = 'ES')
     plot.legend.location = 'top_left'
@@ -164,7 +166,9 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
     length_loss = min(len(loss), len(VaR), plot_length)
     test = pd.DataFrame({'VaR': VaR[int(horizon*252):length_loss], 'Loss': loss[:(length_loss-int(horizon*252))]},
                    index = price.index[int(horizon*252):length_loss])  
-    plot_test = figure(width=600, height=400, title = "VaR/ActualLoss", x_axis_type="datetime")
+    plot_test = figure(width=600, height=400,
+                       title = "%s_%s VaR/ActualLoss" % (method.replace(" VaR/ES", "").replace(" ", "_"), price.name),
+                       x_axis_type="datetime")
     plot_test.line(test.index, test['VaR'], color = 'orange', legend = 'VaR')
     plot_test.line(test.index, test['Loss'], color = 'green', legend = 'Actual Loss')
     plot_test.legend.location = 'top_left'
@@ -232,6 +236,7 @@ def index():
                                  attachment_filename=output_file_1.split('/')[1], as_attachment=True)
             else:
                 pass
+        # Feature 2 - Portfolio
         elif 'btn_2' in request.form:
             if request.form['btn_2'] == 'Price Plot':
                 tickers_string_2 = request.form["tickers_string_2"]
@@ -285,9 +290,9 @@ def index():
                                  attachment_filename=output_file_2.split('/')[1], as_attachment=True)
             else:
                 pass
+        # Feature 3 - Options
         else:
-            return render_template('index.html')
-        # Feature 2 - Portfolio
+            return render_template('index.html', output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv')
 
 
 if __name__ == '__main__':
