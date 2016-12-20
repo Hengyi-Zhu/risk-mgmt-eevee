@@ -2,7 +2,7 @@
 
 The repository contains the final project for Columbia MAFN MATHGR5320 Financial Risk Management & Regulation by group Eevee (Hengyi Zhu, Shuran Zhang, Yizong Chen).
 
-The web application is deployed [!!!here!!!](http://risk-mgmt-eevee.herokuapp.com/index) on Heroku. 
+The web application is deployed [!!!here!!!](http://risk-mgmt-eevee.herokuapp.com/index) on Heroku and built with [Flask](http://flask.pocoo.org/). 
 
 ## Contents on the repository
 - `inputs` folder stores data used during the development process in the `Development.ipynb`.
