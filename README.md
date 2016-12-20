@@ -11,7 +11,8 @@ The web application is deployed [!!!here!!!](http://risk-mgmt-eevee.herokuapp.co
 - `templates` folder contains the HTML codes for the website. [Bootstrap](http://getbootstrap.com/) and javascript are used.
 - `.gitignore` file specifies intentionally untracked files that Git should ignore.
 - `Development.ipynb` is a Jupyter Notebook file for Python 2.7. The majority of prototyping and developing was done here.
-- `Documentation.txt` is the documentation for the project.
+- `Model Documentation.txt` is the model documentation for the project.
+- `Software Design Documentation.txt` is the software design documentation for the project.
 - `Procfile` and `runtime.txt` contain some default settings.
 - `README.md` is what you are looking at right now.
 - `app.py` is the back-end python file powering the website. It organizes the methods developed in `Development.ipynb` and communicates with the HTML. 
