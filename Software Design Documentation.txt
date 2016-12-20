@@ -1,1 +1,30 @@
-to be completed
+Software Design Documentation:
+
+• Software Architecture:
+First of all, this is a web application available at http://risk-mgmt-eevee.herokuapp.com. There are three major components:
+  • HTML code:
+    • For each sub-url that belongs to the root-url "http://risk-mgmt-eevee.herokuapp.com", we need a HTML code saved in the "templates" folder. For example, for "http://risk-mgmt-eevee.herokuapp.com/index", we need "index.html" in the "templates" folder. 
+    • Bootstrap, a CSS/JS template, was used in creating the HTML code for this project.
+    • "static" folder contains files to be loaded into the website, such as css and js files. 
+    • Javascript is used to make the website more user-friendly. For example, when a user click on one of the buttons for plotting and the page is redirected to the new page with generated plot, it automatically scrolls to the plot position.
+  • Core Python script:
+    • Flask, a microframework for Python, is used in connecting the Python code with the HTML code. The structure of "static" and "templates" folders is the Flask default required structure.
+    • app.py is the python file powering the website. It will be discussed in more details in the following sections.
+    • Bokeh, a Python interactive visualization library that targets modern web browsers for presentation, is used for ploting. When a bokeh plot is generated in the python backend, it is coded into a javascript to get rendered in the website. If interested, visit the Bokeh documentation (http://bokeh.pydata.org/en/latest/docs/user_guide.html).
+  • Heroku deployment related files: 
+    • This project is deployed on Heroku, a cloud Platform-as-a-Service (PaaS) that is used as a web application deployment model. A general reference to Python app deployment using Heroku can be found here: https://devcenter.heroku.com/articles/getting-started-with-python-o. 
+    • The following buildpack (https://github.com/kennethreitz/conda-buildpack) is used as the buildpack for this Heroku app.
+    • "conda-requirements.txt" and "requirements.txt" contain the required python packages. Heroku checks those files for what need to be installed in order for the app to run properly. It is important to list all the packages used in the core python script here, otherwise the website might not function.
+    • "nomkl" in "conda-requirements.txt" prevents some slug size problem when deploying to heroku, as it will use the non-mkl optimized binaries, and won't download the mkl package. Otherwise, the slug size will exceeed Heroku's limit. 
+    • "Procfile" and "runtime.txt" contain some default settings.
+
+• Module Documentation:
+  • Purpose. 
+  • Assumptions. 
+  • Interfaces. 
+  • Data structures.
+
+• Data ﬂow documentation:
+  • Operation of system at the module level.
+
+• Document components comprising each module.
