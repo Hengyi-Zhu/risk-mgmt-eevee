@@ -13,3 +13,24 @@
 
 options file uploaded must in date descending order (from newest to oldest)
 We will run NPATHS secnarios
+
+/////////////
+Requirements document: 
+• The purpose of the model. 
+• The scope of use of the model. 
+• Performance requirements of the model.
+
+The design document justiﬁes the choice of model, including:
+• Justiﬁcation of model choice by reference to published research and/or sound documented industry practices.
+• Explanation of the mathematical speciﬁcation and numerical techniques in detail.
+• Analysis of the assumptions, merits and limitations, including the extent to which risks are captured.
+• Comparison with alternative approaches.
+• Documentation and validation of subjective components (such as ﬁne tuning based on expert knowledge).
+
+Data is a critical component. 
+• Problematic data = questionable results.Data analysis includes:
+• Documentation of the data being used. 
+• Rigorous assessment of the data quality. 
+• Demonstration that the data is suitable for the model andconsistent with the theory and methodology. 
+• Identiﬁcation, justiﬁcation and documentation of all proxies used. 
+• Documentation and analysis of all assumptions made whenadjusting data (data cleaning, data smoothing, data averaging, etc).
