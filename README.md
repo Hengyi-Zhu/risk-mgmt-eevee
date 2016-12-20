@@ -9,6 +9,7 @@ The web application is deployed [!!!here!!!](http://risk-mgmt-eevee.herokuapp.co
 - `outputs` folder stores the generated csv data file when people plot using the website, as well as a default file for people to download if they click on "Download Result Data" without first ploting a graph. 
 - `static` folder contains files to be loaded into the website, such as css and js files. 
 - `templates` folder contains the HTML codes for the website. [Bootstrap](http://getbootstrap.com/) and javascript are used.
+- `tests` folder contains test plan and test results as required in the `project_guideline.pdf`.
 - `.gitignore` file specifies intentionally untracked files that Git should ignore.
 - `Development.ipynb` is a Jupyter Notebook file for Python 2.7. The majority of prototyping and developing was done here.
 - `Model Documentation.txt` is the model documentation for the project.
