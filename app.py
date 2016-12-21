@@ -177,6 +177,60 @@ def plot_risk(v0, price, VaR_prob, ES_prob, method, window, horizon, plot_length
     plots = row(plot,plot_test)
     return plots, output_file
 
+# Black Scholes method to calculate put option price
+def bs_put(stock, rf, sigma, strike, maturity):
+    sigrt = 1/(sigma*np.sqrt(maturity))
+    sig2 = sigma*sigma/2
+    lsk = np.log(stock/strike)
+    ert = np.exp(-rf*maturity)
+    d1 = sigrt*(lsk+(rf+sig2)*maturity)
+    d2 = sigrt*(lsk+(rf-sig2)*maturity)
+    pr = stat.norm.cdf(-d2)*strike*ert-stat.norm.cdf(-d1)*stock
+    return pr
+
+# MC method to calculate option portfolio VaR
+# Compute MC VaR for portfolio of a stock and a put option. % the stocks, assuming option implied vols are unchanged.
+def option_mc(s0, mu, sigma, rf, iv, strike, mat, nstocks, nputs, VaR_prob, horizon):
+    npaths = 1000000
+    tv = np.ones(shape =(npaths,1))*horizon
+    bm = np.sqrt(horizon) * np.random.randn(npaths,1)
+    st = s0 * np.exp(sigma * bm - (mu + sigma*sigma/2) * tv)
+    vtStock = st * nstocks
+    v0Stock = s0 * nstocks
+    putt = bs_put(st, rf, iv, strike, mat-horizon)
+    vtPut = nputs * putt
+    put0 = bs_put(s0, rf, iv, strike, mat)
+    v0Put = nputs * put0
+    loss = v0Stock + v0Put - (vtStock + vtPut)
+    VaR = np.percentile(loss, 100*VaR_prob_opt)
+    return VaR
+
+# Option portfolio calculations
+def options_cal(options, rf, mat, v0, liq_rate, VaR_prob, window, horizon):
+    rtn, mu, sigma, mubar, sigmabar = gbm_est(options['Price'], window*252)
+    mu = mu[0]
+    sigma = sigma[0]
+    VaR_1, ES_1 = parametric(v0, mu, sigma, VaR_prob, 0.975, horizon)
+    s0 = options['Price'][0]
+    iv = options['Vol'][0]/100
+    strike = options['Price'][0]
+    nstocks = v0 * (1-liq_rate) / s0
+    put0 = bs_put(s0, rf, iv, strike, mat)
+    nputs = v0 * liq_rate / put0
+    VaR_2 = option_mc(s0, mu, sigma, rf, iv, strike, mat, nstocks, nputs, VaR_prob, horizon)
+    reduction = 100*(1-VaR_2/VaR_1)
+    return s0, nstocks, put0, nputs, VaR_1, VaR_2, reduction
+
+def option_portfolio_analysis(s0, nstocks, put0, nputs, VaR_1, VaR_2, reduction):
+    print_list = [["Stock price: ", s0],
+                  ["Stock shares: ", nstocks],
+                  ["Put price on one share: ", put0],
+                  ["Put shares: ", nputs],
+                  ["VaR without options: ", VaR_1],
+                  ["VaR with options: ", VaR_2],
+                  ["VaR reduction (%): ", reduction]]
+    return print_list
+
 ################## Flask & html interaction ##################
 
 app = Flask(__name__)
@@ -188,7 +242,10 @@ def main():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html', output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv')
+        return render_template('index.html',
+                               output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                               output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
+                               output_file_3 = 'outputs/')
     else:
         # Feature 1 - Individual stock
         if 'btn_1' in request.form:
@@ -291,8 +348,30 @@ def index():
             else:
                 pass
         # Feature 3 - Options
+        elif 'btn_3' in request.form:
+            if request.form['btn_3'] == 'Calculate':
+                tickers_string_3 = request.form["tickers_string_3"]
+                position_date_3 = datetime.datetime.strptime(request.form["position_date_3"], '%Y-%m-%d')
+                end_date_3 = datetime.datetime.strptime(request.form["end_date_3"], '%Y-%m-%d')
+                window_year_3 = int(request.form["window_year_3"])
+                horizon_day_3 = float(request.form["horizon_day_3"])
+                rf_3 = float(request.form["rf_3"])
+                var_prob_3 = float(request.form["var_prob_3"])
+                mat_3 = float(request.form["mat_3"])
+                v0_3 = int(request.form["v0_3"])
+                liq_rate_3 = float(request.form["liq_rate_3"])
+                implied_vol_3 = float(request.form["implied_vol_3"])
+                horizon_year_3 = horizon_day_2/252
+                pass
+            elif request.form['btn_3'] == 'Download Result Data':
+                pass
+            else:
+                pass
         else:
-            return render_template('index.html', output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv')
+            return render_template('index.html',
+                                   output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                                   output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
+                                   output_file_3 = 'outputs/')
 
 
 if __name__ == '__main__':

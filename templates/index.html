@@ -30,6 +30,7 @@
     <!-- Custom styles for this template -->
     <link rel=stylesheet type=text/css href='{{ url_for('static',filename='carousel.css')}}'>
     <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" type="text/css" />
+    <link rel=stylesheet type=text/css href='{{ url_for('static',filename='font-awesome-4.7.0/css/font-awesome.min.css')}}'>
     <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
     <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.css" type="text/css" />
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.js"></script>
@@ -57,7 +58,12 @@
               <ul class="nav navbar-nav">
                 <li style="font-size:130%;" class="active"><a href="#feature1">Individual stock</a></li>
                 <li style="font-size:130%;"><a href="#feature2">Portfolio</a></li>
-                <li style="font-size:130%;"><a href="#feature3">Options</a></li>  
+                <li style="font-size:130%;"><a href="#feature3">Options</a></li>
+                <li style="font-size:130%;" class="pull-right">
+                    <a href="https://github.com/Hengyi-Zhu/risk-mgmt-eevee" target="_blank">
+                        <i class="fa fa-github" aria-hidden="true"></i>
+                    </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -262,6 +268,97 @@
 
       <hr class="featurette-divider">
 
+      <div class="row featurette">
+        <div id="feature3">
+          <h3 align="center" style="font-size:50px;">Options</h3>
+          <p class="lead" align="center">Some descriptions.</p>
+          <form style="font-size:130%;" method='post' align="center">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Ticker: </span>
+                  <input type="text" class="form-control" name="tickers_string_3" value="AAPL">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Start date: </span>
+                  <input type="date" class="form-control" name="position_date_3" value='2000-12-01'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">End date: </span>
+                  <input type="date" class="form-control" name="end_date_3" value='2016-12-01'>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Window (years): </span>
+                  <input type="text" class="form-control" name="window_year_3" value='2'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Horizon (days): </span>
+                  <input type="text" class="form-control" name="horizon_day_3" value='5'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="input-group">
+                      <span class="input-group-addon">Risk Free rate: </span>
+                      <input type="text" class="form-control" name="rf_3" value='0.005'>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">VaR Probability: </span>
+                  <input type="text" class="form-control" name="var_prob_3" value='0.99'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Options maturity (in years): </span>
+                  <input type="text" class="form-control" name="mat_3" value='3'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="input-group">
+                      <span class="input-group-addon">Initial Investments: </span>
+                      <input type="text" class="form-control" name="v0_3" value='1000000'>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Portion of portfolio to liquidate: </span>
+                  <input type="text" class="form-control" name="liq_rate_3" value='0.01'>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Implied Vol: </span>
+                  <input type="text" class="form-control" name="implied_vol_3" value='15.0'>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="form-group">
+              <input type='submit' name="btn_3" value='Calculate'> &nbsp;
+              <input type='submit' name="btn_3" value='Download Result Data'>
+              <input type="hidden" name="output_file_3" value="{{output_file_3}}">
+            </div>
+          </form>
+        </div>
+      </div>  
+      
+      <hr class="featurette-divider">  
+        
       <!-- /END THE FEATURETTES -->
 
 
