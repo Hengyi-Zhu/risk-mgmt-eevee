@@ -83,17 +83,17 @@ def plot_parameters(price):
     pd.merge(mu, sigma, left_index=True, right_index=True).to_csv(output_file)
     pmu = figure(width=600, height=400, title = "%s Mu" % price.name, 
                  x_axis_label='Date', y_axis_label='Mu', x_axis_type="datetime")
-    pmu.line(mu.index, mu['Mu_2'], legend = '2-year roling window')
-    pmu.line(mu.index, mu['Mu_5'], color = 'green', legend = '5-year roling window')
-    pmu.line(mu.index, mu['Mu_10'], color = 'orange', legend = '10-year roling window')
+    pmu.line(mu.index, mu['Mu_2'], legend = '2-year rolling window')
+    pmu.line(mu.index, mu['Mu_5'], color = 'green', legend = '5-year rolling window')
+    pmu.line(mu.index, mu['Mu_10'], color = 'orange', legend = '10-year rolling window')
     pmu.title.text_font_size = '12pt'
     pmu.legend.location = 'top_left'
     pmu.legend.background_fill_alpha = 0.5
     psigma = figure(width=600, height=400, title = "%s Sigma" % price.name, 
                     x_axis_label='Date', y_axis_label='Sigma', x_axis_type="datetime")
-    psigma.line(mu.index, sigma['Sigma_2'], legend = '2-year roling window')
-    psigma.line(mu.index, sigma['Sigma_5'], color = 'green', legend = '5-year roling window')
-    psigma.line(mu.index, sigma['Sigma_10'], color = 'orange', legend = '10-year roling window')
+    psigma.line(mu.index, sigma['Sigma_2'], legend = '2-year rolling window')
+    psigma.line(mu.index, sigma['Sigma_5'], color = 'green', legend = '5-year rolling window')
+    psigma.line(mu.index, sigma['Sigma_10'], color = 'orange', legend = '10-year rolling window')
     psigma.title.text_font_size = '12pt'
     psigma.legend.location = 'top_left'
     psigma.legend.background_fill_alpha = 0.5
