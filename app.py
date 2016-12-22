@@ -4,7 +4,7 @@ from __future__ import division
 
 from flask import Flask, render_template, request, redirect, send_file
 import requests
-import dill, os
+import os
 import sys
 
 from bokeh.plotting import figure
@@ -70,6 +70,7 @@ def gbm_est(prices, window_days):
     mu = np.array(mubar)*252 + np.square(sigma)/2
     return rtn, mu, sigma, np.array(mubar), sigmabar
 
+# Parameter plot
 def plot_parameters(price):
     rtn_2, mu_2, sigma_2, mubar_2, sigmabar_2 = gbm_est(price, 2*252)
     rtn_5, mu_5, sigma_5, mubar_5, sigmabar_5 = gbm_est(price, 5*252)
@@ -123,7 +124,7 @@ def historical(v0, price, VaR_prob, ES_prob, window_days, horizon_days):
 
 # Calculate VaR and ES using Monte Carlo method
 def monte_carlo(v0, price, mu, sigma, VaR_prob, ES_prob, window_days, horizon):
-    npaths = 2500
+    npaths = 5000
     ntrials = len(price) - window_days
     p1 = np.zeros(shape=(npaths,ntrials))
     for i in range(ntrials):
