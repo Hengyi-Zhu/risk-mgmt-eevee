@@ -91,19 +91,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Ticker: </span>
-                  <input type="text" class="form-control" name="tickers_string_1" value="AAPL">
+                  <input type="text" class="form-control" name="tickers_string_1" value="{{tickers_string_1_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Start date: </span>
-                  <input type="date" class="form-control" name="position_date_1" value='2000-12-01'>
+                  <input type="date" class="form-control" name="position_date_1" value='{{position_date_1_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">End date: </span>
-                  <input type="date" class="form-control" name="end_date_1" value='2016-12-01'>
+                  <input type="date" class="form-control" name="end_date_1" value='{{end_date_1_value}}'>
                 </div>
               </div>
             </div>
@@ -111,19 +111,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Initial Investments: </span>
-                  <input type="text" class="form-control" name="v0_1" value="10000">
+                  <input type="text" class="form-control" name="v0_1" value="{{v0_1_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">VaR Probability: </span>
-                  <input type="text" class="form-control" name="var_prob_1" value='0.99'>
+                  <input type="text" class="form-control" name="var_prob_1" value='{{var_prob_1_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">ES Probability: </span>
-                  <input type="text" class="form-control" name="es_prob_1" value='0.975'>
+                  <input type="text" class="form-control" name="es_prob_1" value='{{es_prob_1_value}}'>
                 </div>
               </div>
             </div>
@@ -131,13 +131,13 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Window (years): </span>
-                  <input type="text" class="form-control" name="window_year_1" value='2'>
+                  <input type="text" class="form-control" name="window_year_1" value='{{window_year_1_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Horizon (days): </span>
-                  <input type="text" class="form-control" name="horizon_day_1" value='5'>
+                  <input type="text" class="form-control" name="horizon_day_1" value='{{horizon_day_1_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
@@ -180,13 +180,13 @@
               <div class="col-md-8">
                 <div class="input-group">
                   <span class="input-group-addon">Tickers: </span>
-                  <input type="text" class="form-control" name="tickers_string_2" value="AAPL,MSFT">
+                  <input type="text" class="form-control" name="tickers_string_2" value="{{tickers_string_2_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Start date: </span>
-                  <input type="date" class="form-control" name="position_date_2" value='2000-12-01'>
+                  <input type="date" class="form-control" name="position_date_2" value='{{position_date_2_value}}'>
                 </div>
               </div>
             </div>
@@ -194,13 +194,13 @@
               <div class="col-md-8">
                 <div class="input-group">
                   <span class="input-group-addon">Weights: </span>
-                  <input type="text" class="form-control" name="weights_string_2" value="0.5,0.5">
+                  <input type="text" class="form-control" name="weights_string_2" value="{{weights_string_2_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">End date: </span>
-                  <input type="date" class="form-control" name="end_date_2" value='2016-12-01'>
+                  <input type="date" class="form-control" name="end_date_2" value='{{end_date_2_value}}'>
                 </div>
               </div>
             </div>
@@ -208,19 +208,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Initial Investments: </span>
-                  <input type="text" class="form-control" name="v0_2" value="10000">
+                  <input type="text" class="form-control" name="v0_2" value="{{v0_2_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">VaR Probability: </span>
-                  <input type="text" class="form-control" name="var_prob_2" value='0.99'>
+                  <input type="text" class="form-control" name="var_prob_2" value='{{var_prob_2_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">ES Probability: </span>
-                  <input type="text" class="form-control" name="es_prob_2" value='0.975'>
+                  <input type="text" class="form-control" name="es_prob_2" value='{{es_prob_2_value}}'>
                 </div>
               </div>
             </div>
@@ -228,13 +228,13 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Window (years): </span>
-                  <input type="text" class="form-control" name="window_year_2" value='2'>
+                  <input type="text" class="form-control" name="window_year_2" value='{{window_year_2_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Horizon (days): </span>
-                  <input type="text" class="form-control" name="horizon_day_2" value='5'>
+                  <input type="text" class="form-control" name="horizon_day_2" value='{{horizon_day_2_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
@@ -277,19 +277,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Ticker: </span>
-                  <input type="text" class="form-control" name="tickers_string_3" value="AAPL">
+                  <input type="text" class="form-control" name="tickers_string_3" value="{{tickers_string_3_value}}">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Start date: </span>
-                  <input type="date" class="form-control" name="position_date_3" value='2000-12-01'>
+                  <input type="date" class="form-control" name="position_date_3" value='{{position_date_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">End date: </span>
-                  <input type="date" class="form-control" name="end_date_3" value='2016-12-01'>
+                  <input type="date" class="form-control" name="end_date_3" value='{{end_date_3_value}}'>
                 </div>
               </div>
             </div>
@@ -297,19 +297,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Window (years): </span>
-                  <input type="text" class="form-control" name="window_year_3" value='2'>
+                  <input type="text" class="form-control" name="window_year_3" value='{{window_year_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Horizon (days): </span>
-                  <input type="text" class="form-control" name="horizon_day_3" value='5'>
+                  <input type="text" class="form-control" name="horizon_day_3" value='{{horizon_day_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                   <div class="input-group">
                       <span class="input-group-addon">Risk Free rate: </span>
-                      <input type="text" class="form-control" name="rf_3" value='0.005'>
+                      <input type="text" class="form-control" name="rf_3" value='{{rf_3_value}}'>
                   </div>
               </div>
             </div>
@@ -317,19 +317,19 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">VaR Probability: </span>
-                  <input type="text" class="form-control" name="var_prob_3" value='0.99'>
+                  <input type="text" class="form-control" name="var_prob_3" value='{{var_prob_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Options maturity (in years): </span>
-                  <input type="text" class="form-control" name="mat_3" value='3'>
+                  <input type="text" class="form-control" name="mat_3" value='{{mat_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                   <div class="input-group">
                       <span class="input-group-addon">Initial Investments: </span>
-                      <input type="text" class="form-control" name="v0_3" value='1000000'>
+                      <input type="text" class="form-control" name="v0_3" value='{{v0_3_value}}'>
                   </div>
               </div>
             </div>
@@ -337,13 +337,13 @@
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Portion of portfolio to liquidate: </span>
-                  <input type="text" class="form-control" name="liq_rate_3" value='0.01'>
+                  <input type="text" class="form-control" name="liq_rate_3" value='{{liq_rate_3_value}}'>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Implied Vol: </span>
-                  <input type="text" class="form-control" name="implied_vol_3" value='15.0'>
+                  <input type="text" class="form-control" name="implied_vol_3" value='{{implied_vol_3_value}}'>
                 </div>
               </div>
             </div>
@@ -354,6 +354,19 @@
               <input type="hidden" name="output_file_3" value="{{output_file_3}}">
             </div>
           </form>
+          <br>
+          <div style="{{opt_table_style}}" align='center'>
+            <table>
+                <tr><td class="form-control" align='center' style="font-size:130%;">{{table_title}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">Stock price: {{s0_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">Stock shares: {{nstocks_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">Put price on one share: {{put0_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">Put shares: {{nputs_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">VaR without options: {{VaR_1_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">VaR with options: {{VaR_2_value}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">VaR reduction (percentage): {{reduction_value}}</td><tr>
+            </table>
+          </div>
         </div>
       </div>  
       

@@ -219,17 +219,15 @@ def options_cal(options, rf, mat, v0, liq_rate, VaR_prob, window, horizon):
     nputs = v0 * liq_rate / put0
     VaR_2 = option_mc(s0, mu, sigma, rf, iv, strike, mat, nstocks, nputs, VaR_prob, horizon)
     reduction = 100*(1-VaR_2/VaR_1)
+    print_list = ["Stock price: %s" % s0,
+                  "Stock shares: %s" % nstocks,
+                  "Put price on one share: %s" % put0,
+                  "Put shares: %s" % nputs,
+                  "VaR without options: %s" % VaR_1,
+                  "VaR with options: %s" % VaR_2,
+                  "VaR reduction (percentage): %s" % reduction]
+    pd.DataFrame(print_list).to_csv('outputs/options_AAPL_2000-12-01_2016-12-01.csv', header=False)
     return s0, nstocks, put0, nputs, VaR_1, VaR_2, reduction
-
-def option_portfolio_analysis(s0, nstocks, put0, nputs, VaR_1, VaR_2, reduction):
-    print_list = [["Stock price: ", s0],
-                  ["Stock shares: ", nstocks],
-                  ["Put price on one share: ", put0],
-                  ["Put shares: ", nputs],
-                  ["VaR without options: ", VaR_1],
-                  ["VaR with options: ", VaR_2],
-                  ["VaR reduction (%): ", reduction]]
-    return print_list
 
 ################## Flask & html interaction ##################
 
@@ -242,117 +240,221 @@ def main():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html',
+        return render_template('index.html', opt_table_style = 'display:none',
+                               tickers_string_1_value = 'AAPL', position_date_1_value = '2000-12-01',
+                               end_date_1_value = '2016-12-01', v0_1_value = '10000', var_prob_1_value = '0.99',
+                               es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
                                output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                               tickers_string_2_value = 'AAPL,MSFT', position_date_2_value = '2000-12-01',
+                               weights_string_2_value = '0.5,0.5', end_date_2_value = '2016-12-01',
+                               v0_2_value = '10000', var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                               window_year_2_value = '2', horizon_day_2_value = '5',
                                output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
-                               output_file_3 = 'outputs/')
+                               tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                               end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                               rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                               v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                               output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
     else:
         # Feature 1 - Individual stock
         if 'btn_1' in request.form:
             if request.form['btn_1'] == 'Price Plot':
                 tickers_string_1 = request.form["tickers_string_1"]
-                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
-                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)
+                position_date_1 = request.form["position_date_1"]
+                position_date_1_dt = datetime.datetime.strptime(position_date_1, '%Y-%m-%d')
+                end_date_1 = request.form["end_date_1"]
+                end_date_1_dt = datetime.datetime.strptime(end_date_1, '%Y-%m-%d')
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1_dt, end_date_1_dt)
                 plot_1_1, output_file_1 = plot_price(df_1, plot_length_1)
                 plots = {'div_1_1': plot_1_1}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature1', script = script,
-                                       div_1_1 = div['div_1_1'], output_file_1 = output_file_1)
+                return render_template('index.html', scroll='feature1', opt_table_style = 'display:none',
+                                       script = script, div_1_1 = div['div_1_1'], output_file_1 = output_file_1,
+                                       tickers_string_1_value = tickers_string_1, position_date_1_value = position_date_1,
+                                       end_date_1_value = end_date_1, v0_1_value = '10000', var_prob_1_value = '0.99',
+                                       es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
+                                       tickers_string_2_value = 'AAPL,MSFT', position_date_2_value = '2000-12-01',
+                                       weights_string_2_value = '0.5,0.5', end_date_2_value = '2016-12-01',
+                                       v0_2_value = '10000', var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                       window_year_2_value = '2', horizon_day_2_value = '5',
+                                       output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_1'] == 'Parameter Plot':
                 tickers_string_1 = request.form["tickers_string_1"]
-                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')
-                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
+                position_date_1 = request.form["position_date_1"]
+                position_date_1_dt = datetime.datetime.strptime(position_date_1, '%Y-%m-%d')
+                end_date_1 = request.form["end_date_1"]
+                end_date_1_dt = datetime.datetime.strptime(end_date_1, '%Y-%m-%d')
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1_dt, end_date_1_dt)            
                 plot_1_2, output_file_1 = plot_parameters(df_1.iloc[:,0])
                 plots = {'div_1_2': plot_1_2}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature1', script = script,
-                                       div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
+                return render_template('index.html', scroll='feature1', opt_table_style = 'display:none',
+                                       script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1,
+                                       tickers_string_1_value = tickers_string_1, position_date_1_value = position_date_1,
+                                       end_date_1_value = end_date_1, v0_1_value = '10000', var_prob_1_value = '0.99',
+                                       es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
+                                       tickers_string_2_value = 'AAPL,MSFT', position_date_2_value = '2000-12-01',
+                                       weights_string_2_value = '0.5,0.5', end_date_2_value = '2016-12-01',
+                                       v0_2_value = '10000', var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                       window_year_2_value = '2', horizon_day_2_value = '5',
+                                       output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_1'] == 'Risk Plot':
                 tickers_string_1 = request.form["tickers_string_1"]
-                position_date_1 = datetime.datetime.strptime(request.form["position_date_1"], '%Y-%m-%d')
-                end_date_1 = datetime.datetime.strptime(request.form["end_date_1"], '%Y-%m-%d')            
-                v0_1 = int(request.form["v0_1"])
-                var_prob_1 = float(request.form["var_prob_1"])
-                es_prob_1 = float(request.form["es_prob_1"])
-                window_year_1 = int(request.form["window_year_1"])
-                horizon_day_1 = float(request.form["horizon_day_1"])
-                horizon_year_1 = horizon_day_1/252
+                position_date_1 = request.form["position_date_1"]
+                position_date_1_dt = datetime.datetime.strptime(position_date_1, '%Y-%m-%d')
+                end_date_1 = request.form["end_date_1"]
+                end_date_1_dt = datetime.datetime.strptime(end_date_1, '%Y-%m-%d')            
+                v0_1 = request.form["v0_1"]
+                var_prob_1 = request.form["var_prob_1"]
+                es_prob_1 = request.form["es_prob_1"]
+                window_year_1 = request.form["window_year_1"]
+                horizon_day_1 = request.form["horizon_day_1"]
+                horizon_year_1 = float(horizon_day_1)/252
                 var_es_method_1 = request.form["var_es_method_1"]
-                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1, end_date_1)            
-                plot_1_2, output_file_1 = plot_risk(v0_1, df_1.iloc[:,0], var_prob_1, es_prob_1, 
-                                                    var_es_method_1, window_year_1, horizon_year_1, plot_length_1)
+                df_1, plot_length_1 = create_df_from_tickers(tickers_string_1, position_date_1_dt, end_date_1_dt)            
+                plot_1_2, output_file_1 = plot_risk(int(v0_1), df_1.iloc[:,0], float(var_prob_1), float(es_prob_1), 
+                                                    var_es_method_1, int(window_year_1), horizon_year_1, plot_length_1)
                 plots = {'div_1_2': plot_1_2}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature1', script = script,
-                                       div_1_2 = div['div_1_2'], output_file_1 = output_file_1)
+                return render_template('index.html', scroll='feature1', opt_table_style = 'display:none',
+                                       script = script, div_1_2 = div['div_1_2'], output_file_1 = output_file_1,
+                                       tickers_string_1_value = tickers_string_1, position_date_1_value = position_date_1,
+                                       end_date_1_value = end_date_1, v0_1_value = v0_1, var_prob_1_value = var_prob_1,
+                                       es_prob_1_value = es_prob_1, window_year_1_value = window_year_1, 
+                                       horizon_day_1_value = horizon_day_1,
+                                       tickers_string_2_value = 'AAPL,MSFT', position_date_2_value = '2000-12-01',
+                                       weights_string_2_value = '0.5,0.5', end_date_2_value = '2016-12-01',
+                                       v0_2_value = '10000', var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                       window_year_2_value = '2', horizon_day_2_value = '5',
+                                       output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_1'] == 'Download Result Data':
                 output_file_1 = request.form["output_file_1"]
                 return send_file(output_file_1, mimetype='text/csv', 
                                  attachment_filename=output_file_1.split('/')[1], as_attachment=True)
             else:
-                pass
+                print '1'
         # Feature 2 - Portfolio
         elif 'btn_2' in request.form:
             if request.form['btn_2'] == 'Price Plot':
                 tickers_string_2 = request.form["tickers_string_2"]
                 weights_string_2 = request.form["weights_string_2"]
-                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
-                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
-                v0_2 = int(request.form["v0_2"])
-                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
-                                                                  position_date_2, end_date_2)
+                position_date_2 = request.form["position_date_2"]
+                position_date_2_dt = datetime.datetime.strptime(position_date_2, '%Y-%m-%d')
+                end_date_2 = request.form["end_date_2"]
+                end_date_2_dt = datetime.datetime.strptime(end_date_2, '%Y-%m-%d')
+                v0_2 = request.form["v0_2"]
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, int(v0_2),
+                                                                  position_date_2_dt, end_date_2_dt)
                 plot_2_1, output_file_2 = plot_price(df_2, plot_length_2) 
                 plots = {'div_2_1': plot_2_1}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature2', script = script,
-                                       div_2_1 = div['div_2_1'], output_file_2 = output_file_2)
+                return render_template('index.html', scroll='feature2', opt_table_style = 'display:none',
+                                       script = script, div_2_1 = div['div_2_1'], output_file_2 = output_file_2,
+                                       tickers_string_1_value = 'AAPL', position_date_1_value = '2000-12-01',
+                                       end_date_1_value = '2016-12-01', v0_1_value = '10000', var_prob_1_value = '0.99',
+                                       es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
+                                       output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                                       tickers_string_2_value = tickers_string_2, position_date_2_value = position_date_2,
+                                       weights_string_2_value = weights_string_2, end_date_2_value = end_date_2,
+                                       v0_2_value = v0_2, var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                       window_year_2_value = '2', horizon_day_2_value = '5',
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_2'] == 'Parameter Plot':
                 tickers_string_2 = request.form["tickers_string_2"]
                 weights_string_2 = request.form["weights_string_2"]
-                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
-                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
-                v0_2 = int(request.form["v0_2"])
-                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
-                                                                  position_date_2, end_date_2)            
+                position_date_2 = request.form["position_date_2"]
+                position_date_2_dt = datetime.datetime.strptime(position_date_2, '%Y-%m-%d')
+                end_date_2 = request.form["end_date_2"]
+                end_date_2_dt = datetime.datetime.strptime(end_date_2, '%Y-%m-%d')
+                v0_2 = request.form["v0_2"]
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, int(v0_2),
+                                                                  position_date_2_dt, end_date_2_dt)            
                 plot_2_2, output_file_2 = plot_parameters(df_2.iloc[:,0])
                 plots = {'div_2_2': plot_2_2}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature2', script = script,
-                                       div_2_2 = div['div_2_2'], output_file_2 = output_file_2)
+                return render_template('index.html', scroll='feature2', opt_table_style = 'display:none',
+                                       script = script, div_2_2 = div['div_2_2'], output_file_2 = output_file_2,
+                                       tickers_string_1_value = 'AAPL', position_date_1_value = '2000-12-01',
+                                       end_date_1_value = '2016-12-01', v0_1_value = '10000', var_prob_1_value = '0.99',
+                                       es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
+                                       output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                                       tickers_string_2_value = tickers_string_2, position_date_2_value = position_date_2,
+                                       weights_string_2_value = weights_string_2, end_date_2_value = end_date_2,
+                                       v0_2_value = v0_2, var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                       window_year_2_value = '2', horizon_day_2_value = '5',
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_2'] == 'Risk Plot':
                 tickers_string_2 = request.form["tickers_string_2"]
                 weights_string_2 = request.form["weights_string_2"]
-                position_date_2 = datetime.datetime.strptime(request.form["position_date_2"], '%Y-%m-%d')
-                end_date_2 = datetime.datetime.strptime(request.form["end_date_2"], '%Y-%m-%d')
-                v0_2 = int(request.form["v0_2"])
-                var_prob_2 = float(request.form["var_prob_2"])
-                es_prob_2 = float(request.form["es_prob_2"])
-                window_year_2 = int(request.form["window_year_2"])
-                horizon_day_2 = float(request.form["horizon_day_2"])
-                horizon_year_2 = horizon_day_2/252
+                position_date_2 = request.form["position_date_2"]
+                position_date_2_dt = datetime.datetime.strptime(position_date_2, '%Y-%m-%d')
+                end_date_2 = request.form["end_date_2"]
+                end_date_2_dt = datetime.datetime.strptime(end_date_2, '%Y-%m-%d')
+                v0_2 = request.form["v0_2"]
+                var_prob_2 = request.form["var_prob_2"]
+                es_prob_2 = request.form["es_prob_2"]
+                window_year_2 = request.form["window_year_2"]
+                horizon_day_2 = request.form["horizon_day_2"]
+                horizon_year_2 = float(horizon_day_2)/252
                 var_es_method_2 = request.form["var_es_method_2"]
-                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, v0_2,
-                                                                  position_date_2, end_date_2)            
-                plot_2_2, output_file_2 = plot_risk(v0_2, df_2.iloc[:,0], var_prob_2, es_prob_2, 
-                                                    var_es_method_2, window_year_2, horizon_year_2, plot_length_2)
+                df_2, plot_length_2 = create_df_from_tickers_port(tickers_string_2, weights_string_2, int(v0_2),
+                                                                  position_date_2_dt, end_date_2_dt)            
+                plot_2_2, output_file_2 = plot_risk(int(v0_2), df_2.iloc[:,0], float(var_prob_2), float(es_prob_2), 
+                                                    var_es_method_2, int(window_year_2), horizon_year_2, plot_length_2)
                 plots = {'div_2_2': plot_2_2}
                 script, div = components(plots)
-                return render_template('index.html', scroll='feature2', script = script,
-                                       div_2_2 = div['div_2_2'], output_file_2 = output_file_2)
+                return render_template('index.html', scroll='feature2', opt_table_style = 'display:none',
+                                       script = script, div_2_2 = div['div_2_2'], output_file_2 = output_file_2,
+                                       tickers_string_1_value = 'AAPL', position_date_1_value = '2000-12-01',
+                                       end_date_1_value = '2016-12-01', v0_1_value = '10000', var_prob_1_value = '0.99',
+                                       es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
+                                       output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                                       tickers_string_2_value = tickers_string_2, position_date_2_value = position_date_2,
+                                       weights_string_2_value = weights_string_2, end_date_2_value = end_date_2,
+                                       v0_2_value = v0_2, var_prob_2_value = var_prob_2, es_prob_2_value = es_prob_2,
+                                       window_year_2_value = window_year_2, horizon_day_2_value = horizon_day_2,
+                                       tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                       end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                       rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                       v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                       output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
             elif request.form['btn_2'] == 'Download Result Data':
                 output_file_2 = request.form["output_file_2"]
                 return send_file(output_file_2, mimetype='text/csv', 
                                  attachment_filename=output_file_2.split('/')[1], as_attachment=True)
             else:
-                pass
+                print '2'
         # Feature 3 - Options
         elif 'btn_3' in request.form:
             if request.form['btn_3'] == 'Calculate':
                 tickers_string_3 = request.form["tickers_string_3"]
-                position_date_3 = datetime.datetime.strptime(request.form["position_date_3"], '%Y-%m-%d')
-                end_date_3 = datetime.datetime.strptime(request.form["end_date_3"], '%Y-%m-%d')
+                position_date_3 = request.form["position_date_3"]
+                position_date_3_dt = datetime.datetime.strptime(position_date_3, '%Y-%m-%d')
+                end_date_3 = request.form["end_date_3"]
+                end_date_3_dt = datetime.datetime.strptime(end_date_3, '%Y-%m-%d')
                 window_year_3 = int(request.form["window_year_3"])
                 horizon_day_3 = float(request.form["horizon_day_3"])
                 rf_3 = float(request.form["rf_3"])
@@ -361,17 +463,30 @@ def index():
                 v0_3 = int(request.form["v0_3"])
                 liq_rate_3 = float(request.form["liq_rate_3"])
                 implied_vol_3 = float(request.form["implied_vol_3"])
-                horizon_year_3 = horizon_day_2/252
+                horizon_year_3 = horizon_day_3/252
                 pass
             elif request.form['btn_3'] == 'Download Result Data':
-                pass
+                output_file_3 = request.form["output_file_3"]
+                return send_file(output_file_3, mimetype='text/csv', 
+                                 attachment_filename=output_file_3.split('/')[1], as_attachment=True)
             else:
-                pass
+                print '3'
         else:
-            return render_template('index.html',
+            return render_template('index.html', opt_table_style = 'display:none',
+                                   tickers_string_1_value = 'AAPL', position_date_1_value = '2000-12-01',
+                                   end_date_1_value = '2016-12-01', v0_1_value = '10000', var_prob_1_value = '0.99',
+                                   es_prob_1_value = '0.975', window_year_1_value = '2', horizon_day_1_value = '5',
                                    output_file_1 = 'outputs/price_AAPL_2000-12-01_2016-12-01.csv',
+                                   tickers_string_2_value = 'AAPL,MSFT', position_date_2_value = '2000-12-01',
+                                   weights_string_2_value = '0.5,0.5', end_date_2_value = '2016-12-01',
+                                   v0_2_value = '10000', var_prob_2_value = '0.99', es_prob_2_value = '0.975',
+                                   window_year_2_value = '2', horizon_day_2_value = '5',
                                    output_file_2 = 'outputs/price_Portfolio_AAPL_MSFT_2000-12-01_2016-12-01.csv',
-                                   output_file_3 = 'outputs/')
+                                   tickers_string_3_value = 'AAPL', position_date_3_value = '2000-12-01',
+                                   end_date_3_value = '2016-12-01', window_year_3_value = '2', horizon_day_3_value = '5',
+                                   rf_3_value = '0.005', var_prob_3_value = '0.99', mat_3_value = '3',
+                                   v0_3_value = '1000000', liq_rate_3_value = '0.01', implied_vol_3_value = '15.0',
+                                   output_file_3 = 'outputs/options_AAPL_2000-12-01_2016-12-01.csv')
 
 
 if __name__ == '__main__':
