@@ -271,7 +271,7 @@
       <div class="row featurette">
         <div id="feature3">
           <h3 align="center" style="font-size:50px;">Options</h3>
-          <p class="lead" align="center">Some descriptions.</p>
+          <p class="lead" align="center">This section calculates the percentage of VaR that can be reduced by liquidating a portion of a single stock portfolio to hedge with put options.</p>
           <form style="font-size:130%;" method='post' align="center">
             <div class="row">
               <div class="col-md-4">
@@ -282,24 +282,18 @@
               </div>
               <div class="col-md-4">
                 <div class="input-group">
-                  <span class="input-group-addon">Start date: </span>
+                  <span class="input-group-addon">Position date: </span>
                   <input type="date" class="form-control" name="position_date_3" value='{{position_date_3_value}}'>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-addon">End date: </span>
-                  <input type="date" class="form-control" name="end_date_3" value='{{end_date_3_value}}'>
-                </div>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Window (years): </span>
                   <input type="text" class="form-control" name="window_year_3" value='{{window_year_3_value}}'>
                 </div>
               </div>
+            </div>
+            <div class="row">
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Horizon (days): </span>
@@ -307,19 +301,19 @@
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Risk Free rate: </span>
+                  <input type="text" class="form-control" name="rf_3" value='{{rf_3_value}}'>
+                </div>
+              </div>
+              <div class="col-md-4">
                   <div class="input-group">
-                      <span class="input-group-addon">Risk Free rate: </span>
-                      <input type="text" class="form-control" name="rf_3" value='{{rf_3_value}}'>
+                      <span class="input-group-addon">VaR Probability: </span>
+                      <input type="text" class="form-control" name="var_prob_3" value='{{var_prob_3_value}}'>
                   </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-addon">VaR Probability: </span>
-                  <input type="text" class="form-control" name="var_prob_3" value='{{var_prob_3_value}}'>
-                </div>
-              </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Options maturity (in years): </span>
@@ -327,19 +321,19 @@
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-addon">Initial Investments: </span>
+                  <input type="text" class="form-control" name="v0_3" value='{{v0_3_value}}'>
+                </div>
+              </div>
+              <div class="col-md-4">
                   <div class="input-group">
-                      <span class="input-group-addon">Initial Investments: </span>
-                      <input type="text" class="form-control" name="v0_3" value='{{v0_3_value}}'>
+                      <span class="input-group-addon">Portion of portfolio to liquidate: </span>
+                  <input type="text" class="form-control" name="liq_rate_3" value='{{liq_rate_3_value}}'>
                   </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-addon">Portion of portfolio to liquidate: </span>
-                  <input type="text" class="form-control" name="liq_rate_3" value='{{liq_rate_3_value}}'>
-                </div>
-              </div>
               <div class="col-md-4">
                 <div class="input-group">
                   <span class="input-group-addon">Implied Vol: </span>
@@ -357,7 +351,7 @@
           <br>
           <div style="{{opt_table_style}}" align='center'>
             <table>
-                <tr><td class="form-control" align='center' style="font-size:130%;">{{table_title}}</td><tr>
+                <tr><td class="form-control" align='center' style="font-size:130%;">Results for: {{table_title}}</td><tr>
                 <tr><td class="form-control" align='center' style="font-size:130%;">Stock price: {{s0_value}}</td><tr>
                 <tr><td class="form-control" align='center' style="font-size:130%;">Stock shares: {{nstocks_value}}</td><tr>
                 <tr><td class="form-control" align='center' style="font-size:130%;">Put price on one share: {{put0_value}}</td><tr>
